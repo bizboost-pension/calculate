@@ -81,6 +81,50 @@ for p in scenarios:
 
 st.table(results)
 
+# --- Εξαγωγή PDF ---
+if st.button("📄 Λήψη Αναφοράς σε PDF"):
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Arial", size=12)
+    pdf.set_font("Arial", 'B', 16)
+    pdf.cell(0, 10, "The Bizboost by G. Dionysiou", ln=True, align='C')
+    pdf.set_font("Arial", '', 12)
+    pdf.cell(0, 10, "Αναφορά Υπολογισμού Σύνταξης", ln=True, align='C')
+    pdf.ln(10)
+
+    report_data = [
+        ("Ασφαλιστικό Ταμείο", tameio),
+        ("Ειδική Κατηγορία", eidiki),
+        ("Ηλικία", ilikia),
+        ("Πραγματικά Έτη", ethi_asfalisis),
+        ("Μηνιαίος Μισθός", f"{misthos:.2f} EUR")
+    ]
+
+    for row in results:
+        if row["Πλασματικά Έτη"] == 2:
+            report_data += [
+                ("Πλασματικά Έτη", row["Πλασματικά Έτη"]),
+                ("Συνολικά Έτη", row["Συνολικά Έτη"]),
+                ("Πλήρης Σύνταξη (EUR)", row["Πλήρης Σύνταξη (EUR)"]),
+                ("Μειωμένη Σύνταξη (EUR)", row["Μειωμένη Σύνταξη (EUR)"]),
+                ("Κόστος Εξαγοράς (EUR)", row["Κόστος Εξαγοράς (EUR)"])
+            ]
+            break
+
+    pdf.set_font("Arial", '', 11)
+    for label, value in report_data:
+        pdf.cell(70, 8, f"{label}:", border=0)
+        pdf.cell(0, 8, str(value), ln=True, border=0)
+
+    pdf.ln(10)
+    pdf.set_font("Arial", 'I', 9)
+    pdf.cell(0, 10, "© 2025 The Bizboost by G. Dionysiou", align='C')
+
+    tmp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".pdf")
+    pdf.output(tmp_file.name)
+    with open(tmp_file.name, "rb") as f:
+        st.download_button("⬇️ Κατεβάστε την Αναφορά PDF", f, file_name="Syntaksi_Report_Bizboost.pdf")
+
 # Footer
 st.markdown("---")
 st.markdown("<center><sub>© 2025 The Bizboost by G. Dionysiou | All rights reserved.</sub></center>", unsafe_allow_html=True)
