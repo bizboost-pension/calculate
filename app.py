@@ -36,7 +36,7 @@ if "log" not in st.session_state:
 
 # Προεπιλεγμένες τιμές
 default_tameio = data.get("tameio", {}).get("value", "ΙΚΑ")
-default_eti = data.get("eti_ellada", {}).get("value", 0)
+default_eti = float(data.get("eti_ellada", {}).get("value", 0) or 0)
 default_misthos = data.get("misthos_auto_senariou", {}).get("value", 1000.0)
 year_birth = data.get("year_birth", {}).get("value", 1960)
 ilikia_json = datetime.datetime.now().year - year_birth
